@@ -1,0 +1,78 @@
+---
+name: Vault OIDC Example
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  # This will work both in a PR and from the main branch
+  vault-oidc:
+    runs-on: ubuntu-latest
+    environment: nonprod
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        id: secrets
+        with:
+          exportEnv: false
+          url: https://138.197.55.92:443
+          tlsSkipVerify: true
+          path: github-actions
+          method: jwt
+          role: oidc-test
+          jwtGithubAudience: artis3n-test
+          secrets: |
+            secret/data/foo/bar fi | MY_SECRET
+      
+      - name: Access secret
+        run: echo '${{steps.secrets.outputs.MY_SECRET }}'
+      
+      - name: Secret as an env var
+        run: echo $MY_SPECIAL_SECRET
+        env:
+          MY_SPECIAL_SECRET: ${{ steps.secrets.outputs.MY_SECRET }}
+  
+  # This will fail to authenticate in a PR, but will work from the main branch
+  vault-prod-job:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        id: secrets
+        with:
+          exportEnv: false
+          url: https://138.197.55.92:443
+          tlsSkipVerify: true
+          path: github-actions
+          method: jwt
+          role: oidc-prod-test
+          jwtGithubAudience: artis3n-prod-test
+          secrets: |
+            secret/data/foo/bar fi | MY_SECRET
+      
+      - name: Access secret
+        run: echo '${{steps.secrets.outputs.MY_SECRET }}'
+      
+      - name: Secret as an env var
+        run: echo $MY_SPECIAL_SECRET
+        env:
+          MY_SPECIAL_SECRET: ${{ steps.secrets.outputs.MY_SECRET }}
