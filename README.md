@@ -16,34 +16,35 @@ mkcert [public ip address] localhost 127.0.0.1 ::1
 # Set up a minimally-configured Vault server
 # Update [mkcert filename] with the appropriate name from the output of the previous command
 echo '
-> storage "file" {
->   path = "/root/vault-data"
-> }
->
-> listener "tcp" {
->   address = "0.0.0.0:443"
->   tls_cert_file = "/root/[mkcert filename].pem"
->   tls_key_file = "/root/[mkcert filename]-key.pem"
-> }
->
-> ui = true
-> disable_mlock = true
-> ' > vault-config.hcl
+storage "file" {
+  path = "/root/vault-data"
+}
+
+listener "tcp" {
+  address = "0.0.0.0:443"
+  tls_cert_file = "/root/[mkcert filename].pem"
+  tls_key_file = "/root/[mkcert filename]-key.pem"
+}
+
+ui = true
+disable_mlock = true
+' > vault-config.hcl
 vault server -config vault-config.hcl
 # Proceed to https://<IP>/ and prepare unseal keys for Vault.
 # Follow the UI prompts to unseal Vault.
 #
 # Open up a second terminal and run the rest:
 export VAULT_ADDR='https://0.0.0.0:443'
-vault login [token from server -dev command]
+vault login [root token from unsealing vault]
 # I like to see the audit log on stdout in the first terminal while having a file to refer back to if needed
+# You will want log_raw=true while first configuring/debugging the JWT auth backend.
 vault audit enable file file_path=stdout log_raw=true
 vault audit enable -path="vault_audit_file" file file_path=/root/vault_audit.log
 # Set up a secret and a test policy that will be used by our 2 roles
 vault secrets enable -path=secret kv-v2
 vault kv put secret/foo/bar fi=fofum
 echo '
-path "secret/foo/bar" {
+path "secret/data/foo/bar" {
     capabilities = ["list", "read"]
 }
 ' > policy.hcl
