@@ -32,7 +32,6 @@ jobs:
           path: github-actions
           method: jwt
           role: oidc-test
-          jwtGithubAudience: artis3n-test
           secrets: |
             secret/data/foo/bar fi | MY_SECRET
       
@@ -65,7 +64,6 @@ jobs:
           path: github-actions
           method: jwt
           role: oidc-prod-test
-          jwtGithubAudience: artis3n-prod-test
           secrets: |
             secret/data/foo/bar fi | MY_SECRET
       
