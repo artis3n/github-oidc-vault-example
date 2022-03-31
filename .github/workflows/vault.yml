@@ -27,6 +27,8 @@ jobs:
         id: secrets
         with:
           exportEnv: false
+          # Temporary IP assigned from a Droplet for the purposes of this example.
+          # This resource has been deleted, so if this IP has been re-assigned it belongs to someone else. DO NOT ATTEMPT TO ATTACK IT.
           url: https://138.197.55.92:443
           tlsSkipVerify: true
           path: github-actions
@@ -59,6 +61,8 @@ jobs:
         id: secrets
         with:
           exportEnv: false
+          # Temporary IP assigned from a Droplet for the purposes of this example.
+          # This resource has been deleted, so if this IP has been re-assigned it belongs to someone else. DO NOT ATTEMPT TO ATTACK IT.
           url: https://138.197.55.92:443
           tlsSkipVerify: true
           path: github-actions
