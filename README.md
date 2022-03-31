@@ -1,6 +1,7 @@
 # github-oidc-vault-example
 
 Example repo demonstrating access to Vault secrets through GitHub OIDC auth.
+
 Configure GitHub OIDC authentication to Vault through my Terraform module - [`digitalocean/github-oidc/vault`](https://github.com/digitalocean/terraform-vault-github-oidc).
 
 For a proof of concept, create an Ubuntu 20.04 Droplet and follow [Hashicorp's instructions](https://learn.hashicorp.com/tutorials/vault/getting-started-install) to apt install `vault`.
